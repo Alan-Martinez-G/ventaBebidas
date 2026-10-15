@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refrescos al mejor precio</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      color: #1a1a1a;
+      background: #ffffff;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      text-align: center;
+      margin: 0.5rem 0 1rem;
+    }
+
+    /* Contenedor del GIF/video: pequeño y no tapa el menú */
+    .gif-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .gif-box video,
+    .gif-box img {
+      max-width: 100%;
+      width: 320px;   /* pequeño, no tapa el menú */
+      height: auto;
+      border-radius: 12px;
+      display: block;
+    }
+
+    /* Botón de sonido accesible */
+    .btn-sonido {
+      background: #d32f2f;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-sonido:focus {
+      outline: 3px solid #000;
+      outline-offset: 2px;
+    }
+
+    /* Imagen principal del menú */
+    .menu-img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 12px;
+      border: 2px solid #d32f2f;
+    }
+
+    /* Texto accesible para lectores de pantalla (oculto visualmente) */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🥤 Refrescos al mejor precio</h1>
+
+  <!-- GIF/VIDEO con control de sonido -->
+  <div class="gif-box">
+    <!-- 
+      Usamos un <video> en lugar de <img> porque:
+      1) Permite controlar el sonido
+      2) Permite pausar (mejor accesibilidad)
+      3) Respeta prefers-reduced-motion
+      El archivo es el MP4 del mismo GIF de Giphy.
+    -->
+    <video
+      id="miVideo"
+      width="320"
+      height="320"
+      autoplay
+      loop
+      muted
+      playsinline
+      aria-label="Animación de refrescos. Pulsa el botón para activar el sonido.">
+      <source src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHAyaDB0aHU2cDl0a2x4ajlzbjRlM3lmeXF6NWxxMXI4bjIyNGJ3YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9dg/Id2hjp2JJmhCNMw8yw/giphy.mp4" type="video/mp4">
+      Tu navegador no soporta video HTML5.
+    </video>
+
+    <button class="btn-sonido" id="btnSonido" aria-pressed="false">
+      🔊 Activar sonido
+    </button>
+  </div>
+
+  <!-- Imagen principal del menú -->
+  <img
+    class="menu-img"
+    src="menu.jpg"
+    alt="Menú de refrescos: Coca-Cola 600 ml a 23 pesos, Coca-Cola Chubby 355 ml a 16 pesos, Coca-Cola Chubby Zero 355 ml a 13 pesos, Topo Chico Original 600 ml a 25 pesos, Topo Chico Limonada 600 ml a 25 pesos, Topo Chico Naranjada 600 ml a 25 pesos.">
+
+  <footer>
+    <p>Escanea, elige y refresca 🥤</p>
+  </footer>
+
+  <script>
+    const video = document.getElementById('miVideo');
+    const btn = document.getElementById('btnSonido');
+
+    btn.addEventListener('click', () => {
+      if (video.muted) {
+        video.muted = false;
+        video.volume = 1;
+        // Si el navegador pausó el video, lo reanudamos
+        video.play().catch(() => {});
+        btn.textContent = '🔇 Silenciar';
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        video.muted = true;
+        btn.textContent = '🔊 Activar sonido';
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    });
+
+    // Respeta la preferencia de "menos movimiento"
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      video.autoplay = false;
+      video.pause();
+    }
+  </script>
+
+</body>
+</html>
